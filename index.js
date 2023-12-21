@@ -25,7 +25,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/example2").then(()=>{
 })
 
 const usrschema = new mongoose.Schema({
-    name: String,
+    FirstName: String,
+    SndName: String,
     email : String,
     password : String
 })
@@ -47,19 +48,8 @@ const isauth = async(req,res,next)=>{
 };
 
 app.get("/",isauth,(req,res)=>{
-    res.render("logout",{name : req.user.name})
-})
-
-app.post("/",(req,res)=>{
-    data.push(req.body)
-    console.log(data)
-    msg.create(req.body).then(()=>{
-        res.redirect("/success")
-    }).catch((e)=>{
-        console.log(e)
-        res.send("Error")
-    })
-    
+    //console.log(req.body.SndName)
+    res.render("logout",{name : req.user.SndName})
 })
 
 app.get("/login",(req,res)=>{
@@ -71,7 +61,7 @@ app.get("/register",(req,res)=>{
 })
 
 app.post("/register",async(req,res)=>{
-    const {name, email,password} = req.body;
+    const {FirstName, SndName, email,password} = req.body;
 
     let ur = await user.findOne({email})
     if(ur){
@@ -80,11 +70,14 @@ app.post("/register",async(req,res)=>{
 
     const hashpass = await bcrypt.hash(password,10)
 
-    ur = await user.create({name,email,password : hashpass});
+    ur = await user.create({FirstName, SndName,email,password : hashpass});
 
     const token = jwt.sign({_id: ur._id},"qwertyuiopkjhgfdsa")
 
-    res.cookie("token",token);
+    res.cookie("token",token,{
+        httpOnly : true,
+        expires : new Date(Date.now() + 60*1000)
+    });
     res.redirect("/");
 })
 
