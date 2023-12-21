@@ -1,0 +1,19 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    padding: 50px 100px;
+}
+input{
+    padding: 20px 10px;
+}
+button{
+    padding: 20px 10px;
+}
+
